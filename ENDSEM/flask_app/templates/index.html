@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vein Analysis Tool</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main-container">
+      <header class="app-header">
+        <h1>Vein Analysis Tool</h1>
+        <p>
+          Upload an NIR image to identify vein structures and potential
+          cannulation sites.
+        </p>
+      </header>
+
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flash-container">
+        {% for message in messages %}
+        <p class="flash-message">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+
+      <section class="card upload-card">
+        <h2>Upload Image</h2>
+        <form
+          method="post"
+          action="{{ url_for('upload_and_process') }}"
+          enctype="multipart/form-data"
+          class="upload-form"
+        >
+          <div class="form-group file-group">
+            <label for="nir_image" class="button file-button"
+              >Choose Image File</label
+            >
+            <input
+              type="file"
+              name="nir_image"
+              id="nir_image"
+              required
+              accept=".png, .jpg, .jpeg, .bmp, .tif, .tiff"
+            />
+            <span id="file-name-display" class="file-name-info"
+              >No file selected</span
+            >
+          </div>
+          <div class="form-group scale-group">
+            <label for="scale_ppi">Scale (Optional Pixels/Inch):</label>
+            <input
+              type="number"
+              step="any"
+              name="scale_ppi"
+              id="scale_ppi"
+              placeholder="e.g., 96"
+            />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="button submit-button">Analyze</button>
+          </div>
+        </form>
+      </section>
+
+      {% if original_image and mask_image %}
+      <section class="card results-card">
+        <h2>Results</h2>
+
+        <div class="result-image-full">
+          <h3>Original Upload</h3>
+          <img
+            src="{{ original_image }}"
+            alt="Original Uploaded Image"
+            data-zoomable
+          />
+        </div>
+
+        <div class="results-grid-compare">
+          <div class="image-display">
+            <h3>Detected Vein Mask (B&W)</h3>
+            <img
+              src="{{ mask_image }}"
+              alt="Detected Vein Mask"
+              data-zoomable
+            />
+          </div>
+          {% if annotated_image %}
+          <div class="image-display annotated-display">
+            <h3>Potential Sites Map (Labeled)</h3>
+            <img
+              src="{{ annotated_image }}"
+              alt="Annotated Mask with Potential Sites Labeled"
+              data-zoomable
+            />
+          </div>
+          {% else %}
+          <div class="image-display annotated-display placeholder">
+            <h3>Potential Sites Map</h3>
+            <p>(Analysis did not produce a map)</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="analysis-details">
+          <h3>Analysis Summary</h3>
+          {% if analysis_message %}
+          <p class="analysis-status">{{ analysis_message }}</p>
+          {% endif %} {% if analysis_results %}
+          <h4>Details of Potential Sites:</h4>
+          <ul class="site-list">
+            {% for site in analysis_results %}
+            <li class="site-item">
+              <span class="site-id">Site #{{ site.id }}</span>
+              <span class="site-reason">Criteria Met: {{ site.reason }}</span>
+              <span class="site-detail"
+                >Approx. Location (px): ({{ site.location[0] }}, {{
+                site.location[1] }})</span
+              >
+              <span class="site-detail"
+                >Length: {{ "%.2f"|format(site.length_in) }} inches</span
+              >
+              <span class="site-detail"
+                >Straightness Ratio: {{ "%.2f"|format(site.straightness)
+                }}</span
+              >
+            </li>
+            {% endfor %}
+          </ul>
+          {% elif annotated_image %} {# If analysis ran but found no sites #}
+          <p class="no-sites-found">
+            No specific sites met all basic criteria for highlighting.
+          </p>
+          {% endif %}
+        </div>
+      </section>
+      {% endif %} {# End results check #}
+    </div>
+    <div id="imageModal" class="modal">
+      <span class="modal-close-button" title="Close (Esc)">&times;</span>
+      <img class="modal-content" id="modalImage" />
+      <div id="modalCaption"></div>
+    </div>
+    <script>
+      // Script to display the chosen filename
+      const fileInput = document.getElementById("nir_image");
+      const fileNameDisplay = document.getElementById("file-name-display");
+      if (fileInput) {
+        fileInput.addEventListener("change", function () {
+          fileNameDisplay.textContent = this.files[0]
+            ? this.files[0].name
+            : "No file selected";
+        });
+      }
+
+      // --- Modal Zoom Functionality ---
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      const modalCaption = document.getElementById("modalCaption");
+      // Select only images within the results section that have the data-zoomable attribute
+      const imagesToZoom = document.querySelectorAll(
+        ".results-card img[data-zoomable]"
+      );
+      const closeButton = document.querySelector(".modal-close-button");
+
+      // Add click listener to each zoomable image
+      imagesToZoom.forEach((img) => {
+        img.style.cursor = "zoom-in"; // Add visual cue
+        img.onclick = function () {
+          if (modal && modalImg && modalCaption) {
+            modal.style.display = "flex"; // Use flex for centering content
+            modalImg.src = this.src;
+            modalCaption.textContent = this.alt;
+          }
+        };
+      });
+
+      // Function to close the modal
+      function closeModal() {
+        if (modal) {
+          modal.style.display = "none";
+          modalImg.src = ""; // Clear src to prevent brief display of old image
+        }
+      }
+
+      // Close modal when the close button (span) is clicked
+      if (closeButton) {
+        closeButton.onclick = closeModal;
+      }
+
+      // Close modal when clicking the background overlay
+      if (modal) {
+        modal.onclick = function (event) {
+          // Close only if the click is on the modal background itself, not the image
+          if (event.target == modal) {
+            closeModal();
+          }
+        };
+      }
+
+      // Close modal with the Escape key
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && modal && modal.style.display === "flex") {
+          closeModal();
+        }
+      });
+      // --- End Modal Zoom Functionality ---
+    </script>
+  </body>
+</html>

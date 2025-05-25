@@ -1,0 +1,490 @@
+/* static/style.css - Minimal Monochrome Theme v7 - LAYOUT & FULL MODAL ZOOM */
+
+:root {
+  --bg-color: #ffffff;
+  --card-bg: #ffffff;
+  --text-color: #000000;
+  --text-secondary: #4a4a4a;
+  --border-color: #e0e0e0;
+  --button-bg: #000000;
+  --button-text: #ffffff;
+  --button-hover: #333333;
+  --flash-bg: #f5f5f5;
+  --flash-border: #dddddd;
+  --image-bg: #f9f9f9;
+  --image-border: #cccccc;
+  --analysis-bg: #f0f0f0;
+  --modal-bg: rgba(0, 0, 0, 0.92); /* Slightly darker overlay */
+  --modal-caption-color: #cccccc;
+  --font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --base-font-size: 18px;
+}
+
+/* --- Global Reset & Base --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.7;
+  font-weight: 400;
+  font-size: var(--base-font-size);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.main-container {
+  max-width: 1500px;
+  width: 95%;
+  margin: 40px auto;
+  padding: 0 30px;
+}
+
+/* --- Header --- */
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+.app-header h1 {
+  font-size: 2.5em;
+  font-weight: 500;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+.app-header p {
+  font-size: 1.2em;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* --- Cards --- */
+.card {
+  background-color: var(--card-bg);
+  padding: 35px 40px;
+  margin-bottom: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+.card h2 {
+  font-size: 1.7em;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+  color: var(--text-color);
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* --- Flash Messages --- */
+.flash-container {
+  margin-bottom: 30px;
+}
+.flash-message {
+  padding: 15px 20px;
+  margin: 0 0 12px 0;
+  border: 1px solid var(--flash-border);
+  background-color: var(--flash-bg);
+  color: var(--text-color);
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.05em;
+}
+
+/* --- Upload Form --- */
+.upload-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  align-items: center;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.scale-group label {
+  font-size: 1em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.scale-group input[type="number"] {
+  padding: 10px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  width: 160px;
+  font-size: 1em;
+  text-align: center;
+  background-color: #fdfdfd;
+}
+.scale-group input[type="number"]::-webkit-inner-spin-button,
+.scale-group input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.scale-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="file"] {
+  display: none;
+}
+.button {
+  display: inline-block;
+  padding: 14px 28px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.05em;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  width: auto;
+  min-width: 200px;
+}
+.button:hover {
+  background-color: var(--button-hover);
+}
+.file-name-info {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  display: block;
+  text-align: center;
+  min-height: 1.3em;
+  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 95%;
+}
+
+/* --- Results --- */
+.results-card {
+  /* Uses base card style */
+}
+
+/* Container for the single top image */
+.result-image-full {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--image-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+.result-image-full h3 {
+  font-size: 1.3em;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+.result-image-full img {
+  max-width: 100%;
+  width: auto;
+  max-height: 70vh;
+  height: auto;
+  border: 1px solid var(--image-border);
+  border-radius: 4px;
+  background-color: #fff;
+  display: block;
+  margin: 0 auto;
+  cursor: pointer; /* Add cursor */
+}
+
+/* Grid for the two comparison images */
+.results-grid-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+  align-items: start;
+}
+.image-display {
+  /* Style for individual image cards */
+  text-align: center;
+  background-color: var(--image-bg);
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+.image-display h3 {
+  font-size: 1.3em;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+.image-display img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--image-border);
+  border-radius: 4px;
+  background-color: #fff;
+  display: block;
+  margin: 0 auto;
+  flex-grow: 1;
+  object-fit: contain;
+  cursor: pointer; /* Add cursor */
+}
+.image-display img[alt*="Mask"],
+.image-display img[alt*="Map"] {
+  background-color: #000;
+}
+.annotated-display.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* --- Analysis Details --- */
+.analysis-details {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-color);
+}
+.analysis-details h3 {
+  font-size: 1.5em;
+  font-weight: 500;
+  margin-bottom: 25px;
+  text-align: center;
+}
+.analysis-status {
+  text-align: center;
+  font-size: 1.1em;
+  color: var(--text-secondary);
+  margin: 0 auto 30px auto;
+  padding: 15px 20px;
+  background-color: var(--flash-bg);
+  border: 1px solid var(--flash-border);
+  border-radius: 5px;
+  max-width: 90%;
+}
+.analysis-details h4 {
+  font-size: 1.2em;
+  font-weight: 500;
+  margin-bottom: 15px;
+  text-align: center;
+  color: var(--text-color);
+}
+.site-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 25px auto;
+  max-width: 800px;
+}
+.site-item {
+  background-color: var(--analysis-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  font-size: 1.05em;
+}
+.site-item span {
+  display: block;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.site-item span:last-child {
+  margin-bottom: 0;
+}
+.site-id {
+  font-weight: 600;
+  color: #000;
+  font-size: 1.1em;
+}
+.site-reason {
+  font-style: normal;
+  color: #333;
+}
+.site-detail {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+}
+.no-sites-found {
+  text-align: center;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin: 20px 0;
+}
+.analysis-disclaimer {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  margin-top: 30px;
+  text-align: center;
+  padding: 15px;
+  line-height: 1.7;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: var(--flash-bg);
+  border: 1px solid var(--flash-border);
+  border-radius: 4px;
+}
+.analysis-disclaimer strong {
+  font-weight: 500;
+  color: #000;
+}
+
+/* === UPDATED: Modal Styles for Full Image === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  /* Remove padding to allow image to fill */
+  padding: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Hide scrollbars if image fits */
+  background-color: var(--modal-bg);
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  /* Use flex display from JS */
+}
+
+.modal-content {
+  position: relative;
+  margin: auto; /* Center horizontally */
+  display: block;
+  /* Make image fill the viewport */
+  width: auto; /* Let height determine width */
+  height: auto; /* Let image determine height */
+  max-width: 100vw; /* Max width is viewport width */
+  max-height: 100vh; /* Max height is viewport height */
+  cursor: default;
+  background-color: #000;
+  /* Animation remains the same */
+  animation-name: zoom;
+  animation-duration: 0.3s;
+  /* Ensure image fits within bounds without distortion */
+  object-fit: contain;
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Hide the caption */
+#modalCaption {
+  display: none;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #ffffff;
+  font-size: 45px; /* Make close button larger */
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+  z-index: 1001;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); /* Stronger shadow */
+  line-height: 0.6; /* Adjust line height for better positioning */
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus {
+  color: #bbb;
+  text-decoration: none;
+}
+/* ========================================== */
+
+/* --- Responsive adjustments --- */
+@media (max-width: 1200px) {
+  .main-container {
+    max-width: 95%;
+  }
+  .results-grid-compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  .main-container {
+    margin: 25px auto;
+    padding: 0 15px;
+  }
+  .card {
+    padding: 25px;
+  }
+  .app-header h1 {
+    font-size: 2em;
+  }
+  .card h2 {
+    font-size: 1.4em;
+  }
+  .upload-form {
+    grid-template-columns: 1fr;
+  }
+  .button {
+    padding: 12px 25px;
+    font-size: 1em;
+  }
+  .site-item {
+    font-size: 1em;
+  }
+  /* No specific modal content size change needed as it uses viewport units */
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+  .app-header h1 {
+    font-size: 1.8em;
+  }
+  .card h2 {
+    font-size: 1.3em;
+  }
+  .button,
+  .file-button {
+    padding: 11px 20px;
+    font-size: 0.95em;
+    min-width: 150px;
+  }
+  .scale-group input[type="number"] {
+    width: 110px;
+    padding: 9px;
+  }
+  .image-display h3 {
+    font-size: 1.15em;
+  }
+  .site-item {
+    padding: 12px 15px;
+  }
+  .modal-close-button {
+    font-size: 35px;
+    top: 10px;
+    right: 20px;
+  } /* Adjust close button */
+}
